@@ -9,6 +9,8 @@ class CreatePlaySignals < ActiveRecord::Migration[5.2]
       t.boolean :published
 
       t.timestamps
+
+      t.index :user_id
     end
   end
 end
