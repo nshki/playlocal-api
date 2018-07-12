@@ -5,6 +5,11 @@ class PlaySignalTest < ActiveSupport::TestCase
     assert play_signals(:tohfoo_signal).valid?
   end
 
+  test 'belongs to user' do
+    signal = play_signals(:tohfoo_signal)
+    assert signal.user.class == User
+  end
+
   test 'invalid without message' do
     signal = play_signals(:tohfoo_signal)
     signal.message = ''
@@ -23,6 +28,12 @@ class PlaySignalTest < ActiveSupport::TestCase
     assert !signal.valid?
   end
 
+  test '.all_active returns all active signals' do
+    play_signals(:tohfoo_signal).update(published: false)
+    all_signals = PlaySignal.all_active
+    assert all_signals.include?(play_signals(:brianydg_signal)) && all_signals.size == 1
+  end
+
   test '#active? based on end_time and published' do
     signal = play_signals(:tohfoo_signal)
     assert signal.active?
@@ -33,10 +44,5 @@ class PlaySignalTest < ActiveSupport::TestCase
     signal.end_time = DateTime.tomorrow
     signal.published = false
     assert !signal.active? && signal.valid?
-  end
-
-  test 'belongs to user' do
-    signal = play_signals(:tohfoo_signal)
-    assert signal.user.class == User
   end
 end
