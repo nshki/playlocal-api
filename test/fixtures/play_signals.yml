@@ -1,0 +1,8 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+test_signal:
+  message: Best of 5?
+  end_time: <%= DateTime.tomorrow %>
+  lat: 1.5
+  lng: 1.5
+  published: true
