@@ -16,4 +16,9 @@ class UserTest < ActiveSupport::TestCase
     user.username = users(:brianydg).username
     assert !user.valid?
   end
+
+  test 'has one signal' do
+    user = users(:tohfoo)
+    assert user.play_signal.class == PlaySignal
+  end
 end
