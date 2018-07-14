@@ -18,7 +18,6 @@ class Auth
     jwt_decoded.first # Returning first since the result is an array.
   end
 
-
   private_class_method def self.algorithm
     'HS256'
   end
