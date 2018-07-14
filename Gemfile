@@ -12,6 +12,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-discord'
 gem 'graphql'
 gem 'graphiql-rails'
+gem 'jwt'
 
 group :development, :test do
   gem 'dotenv-rails'

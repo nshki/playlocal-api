@@ -197,6 +197,7 @@ DEPENDENCIES
   dotenv-rails
   graphiql-rails
   graphql
+  jwt
   listen (>= 3.0.5, < 3.2)
   omniauth
   omniauth-discord
