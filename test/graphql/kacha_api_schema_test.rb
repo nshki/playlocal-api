@@ -48,4 +48,25 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
     assert signal.end_time == DateTime.new(2018, 7, 15, 19, 14)
     assert signal.published == true
   end
+
+  test 'updateProfile' do
+    user = users(:tohfoo)
+    query = %(
+      mutation {
+        updateProfile(username: "Teehee", avatarPlatform: "discord") {
+          errors
+        }
+      }
+    )
+    context = { current_user: user }
+
+    # Authorized?
+    response = KachaApiSchema.execute(query, context: {}, variables: {}).to_h
+    assert response['data']['updateProfile']['errors'].first == I18n.t('unauthorized')
+
+    # Successful mutation.
+    response = KachaApiSchema.execute(query, context: context, variables: {}).to_h
+    assert user.username == 'Teehee'
+    assert user.avatar_platform == 'discord'
+  end
 end
