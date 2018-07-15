@@ -5,7 +5,7 @@ class CallbacksController < ApplicationController
     image_url_key = "#{auth_hash[:provider]}_image_url"
     args = { uid_key => auth_hash[:uid] }
 
-    user = User.find_or_create_by(args) do
+    user = User.find_or_create_by(args) do |u|
       u.username = auth_hash[:info][:nickname]
       u[uid_key] = auth_hash[:uid]
       u[username_key] = auth_hash[:info][:nickname]
