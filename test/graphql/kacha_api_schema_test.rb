@@ -1,6 +1,6 @@
 class KachaApiSchemaTest < ActiveSupport::TestCase
-  test 'full, valid query' do
-    query_string = %(
+  test 'activeSignals' do
+    query = %(
       {
         activeSignals {
           message
@@ -22,8 +22,31 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
       }
     )
 
-    response = KachaApiSchema.execute(query_string, context: {}, variables: {})
-    response_hash = response.to_h
-    assert !response_hash.has_key?('errors')
+    response = KachaApiSchema.execute(query, context: {}, variables: {}).to_h
+    assert !response.has_key?('errors')
+  end
+
+  test 'updateSignal' do
+    user = users(:tohfoo)
+    end_time = DateTime.tomorrow
+    query = %(
+      mutation {
+        updateSignal(message: "Test", endTime: "#{end_time.to_s}", published: true) {
+          errors
+        }
+      }
+    )
+    context = { current_user: user }
+
+    # Authorized?
+    response = KachaApiSchema.execute(query, context: {}, variables: {}).to_h
+    assert response['data']['updateSignal']['errors'].first == I18n.t('unauthorized')
+
+    # Successful mutation.
+    response = KachaApiSchema.execute(query, context: context, variables: {}).to_h
+    signal = user.play_signal
+    assert signal.message == 'Test'
+    assert signal.end_time == end_time
+    assert signal.published == true
   end
 end
