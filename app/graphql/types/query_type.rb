@@ -6,7 +6,15 @@ class Types::QueryType < Types::BaseObject
     description 'Get all active signals'
   end
 
+  field :current_user, Types::UserType, null: true do
+    description 'Get current authenticated user'
+  end
+
   def active_signals
     PlaySignal.all_active
+  end
+
+  def current_user
+    context[:current_user]
   end
 end

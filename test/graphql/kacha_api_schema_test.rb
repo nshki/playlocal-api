@@ -1,5 +1,3 @@
-require 'test_helper'
-
 class KachaApiSchemaTest < ActiveSupport::TestCase
   test 'full, valid query' do
     query_string = %(
