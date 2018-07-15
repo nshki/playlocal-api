@@ -20,8 +20,23 @@ class Identity < ApplicationRecord
     user.identities.create(
       provider: hash[:provider],
       uid: hash[:uid],
-      username: hash[:info][:nickname],
+      username: get_omniauth_username(hash),
       image_url: hash[:info][:image],
     )
+  end
+
+  # Given an auth hash returned by OmniAuth, returns the correct username string
+  # based on provider.
+  #
+  # @param {Hash} hash
+  # @return {String}
+  def self.get_omniauth_username(hash)
+    case hash[:provider]
+    when 'twitter'
+      hash[:info][:nickname]
+    when 'discord'
+      subhash = hash[:extra][:raw_info]
+      "#{subhash[:username]}##{subhash[:discriminator]}"
+    end
   end
 end

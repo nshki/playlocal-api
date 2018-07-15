@@ -7,6 +7,8 @@ class CallbacksController < ApplicationController
       jwt = Auth.encode(identity.user)
       redirect_to "#{client_url}?token=#{jwt}"
     else
+      # This shouldn't occur at all, but is there as a fallback in case this
+      # somehow happens.
       redirect_to client_url
     end
   end
