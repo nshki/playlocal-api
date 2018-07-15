@@ -28,10 +28,9 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
 
   test 'updateSignal' do
     user = users(:tohfoo)
-    end_time = DateTime.tomorrow
     query = %(
       mutation {
-        updateSignal(message: "Test", endTime: "#{end_time.to_s}", published: true) {
+        updateSignal(message: "Test", endTime: "Jul 15, 2018 7:14pm", published: true) {
           errors
         }
       }
@@ -46,7 +45,7 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
     response = KachaApiSchema.execute(query, context: context, variables: {}).to_h
     signal = user.play_signal
     assert signal.message == 'Test'
-    assert signal.end_time == end_time
+    assert signal.end_time == DateTime.new(2018, 7, 15, 19, 14)
     assert signal.published == true
   end
 end
