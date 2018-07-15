@@ -1,15 +1,16 @@
 class CallbacksControllerTest < ActionDispatch::IntegrationTest
   test 'redirects to expected path with existing user' do
     user = users(:tohfoo)
+    identity = user.identities.find_by(provider: 'twitter')
     auth_hash = {
-      uid: user.twitter_uid,
-      provider: 'twitter',
+      uid: identity.uid,
+      provider: identity.provider,
       info: {
-        nickname: user.twitter_username,
-        image: user.twitter_image_url,
+        nickname: identity.username,
+        image: identity.image_url,
       },
     }
-    jwt = Auth.encode(user, auth_hash[:provider])
+    jwt = Auth.encode(user)
     OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new(auth_hash)
 
     get '/auth/twitter'
@@ -32,10 +33,10 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     get '/auth/twitter'
     follow_redirect!
 
-    user = User.find_by(twitter_uid: '12345')
-    assert user.present?
-    assert user.username = 'newuser'
-    assert user.twitter_uid = '12345'
-    assert user.twitter_username = 'newuser'
+    identity = Identity.find_by(provider: 'twitter', uid: '12345')
+    user = identity && identity.user.present? ? identity.user : User.new
+    assert user.present? && user.valid? && user.username == 'newuser'
+    assert identity.present? && identity.provider == 'twitter' &&
+           identity.uid == '12345' && identity.username == 'newuser'
   end
 end

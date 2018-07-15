@@ -1,11 +1,10 @@
 class Auth
-  # Given a user object and provider, encodes a JWT and returns it.
+  # Given a user object, encodes a JWT and returns it.
   #
   # @param {User} user
-  # @param {String} provider
   # @return {String}
-  def self.encode(user, provider)
-    payload = { provider: provider, uid: user["#{provider}_uid"] }
+  def self.encode(user)
+    payload = { id: user.id }
     JWT.encode(payload, auth_secret, algorithm)
   end
 

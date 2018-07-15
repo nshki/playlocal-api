@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+tohfoo_twitter:
+  user: tohfoo
+  provider: twitter
+  uid: abcdefg
+  username: Tohfoo_
+  image_url: https://twitter.com
+
+tohfoo_discord:
+  user: tohfoo
+  provider: discordj
+  uid: abcdefg
+  username: "Tohfoo#1306"
+  image_url: https://discordapp.com
+
+brianydg_twitter:
+  user: brianydg
+  provider: twitter
+  uid: briaycj
+  username: BriaYCJ
+  image_url: https://twitter.com
+
+brianydg_discord:
+  user: tohfoo
+  provider: discord
+  uid: briaycj
+  username: "BriaYCJ#123"
+  image_url: https://discordapp.com

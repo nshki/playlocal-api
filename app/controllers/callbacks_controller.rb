@@ -1,20 +1,13 @@
 class CallbacksController < ApplicationController
   def handle
-    uid_key = "#{auth_hash[:provider]}_uid"
-    username_key = "#{auth_hash[:provider]}_username"
-    image_url_key = "#{auth_hash[:provider]}_image_url"
-    args = { uid_key => auth_hash[:uid] }
+    identity = Identity.find_with_omniauth(auth_hash)
+    identity = Identity.create_with_omniauth(auth_hash) if identity.nil?
 
-    user = User.find_or_create_by(args) do |u|
-      u.username = auth_hash[:info][:nickname]
-      u[uid_key] = auth_hash[:uid]
-      u[username_key] = auth_hash[:info][:nickname]
-      u[image_url_key] = auth_hash[:info][:image]
-    end
-
-    if user
-      jwt = Auth.encode(user, auth_hash[:provider])
-      redirect_to "#{ENV['CLIENT_URL']}?token=#{jwt}"
+    if identity.user.present?
+      jwt = Auth.encode(identity.user)
+      redirect_to "#{client_url}?token=#{jwt}"
+    else
+      redirect_to client_url
     end
   end
 
@@ -22,5 +15,9 @@ class CallbacksController < ApplicationController
 
     def auth_hash
       request.env['omniauth.auth']
+    end
+
+    def client_url
+      ENV['CLIENT_URL']
     end
 end
