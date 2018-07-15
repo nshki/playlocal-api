@@ -5,6 +5,11 @@ class UserTest < ActiveSupport::TestCase
     assert users(:tohfoo).valid?
   end
 
+  test 'has one signal' do
+    user = users(:tohfoo)
+    assert user.play_signal.class == PlaySignal
+  end
+
   test 'invalid without username' do
     user = users(:tohfoo)
     user.username = ''
@@ -17,8 +22,22 @@ class UserTest < ActiveSupport::TestCase
     assert !user.valid?
   end
 
-  test 'has one signal' do
+  test 'invalid without avatar_platform' do
     user = users(:tohfoo)
-    assert user.play_signal.class == PlaySignal
+    user.avatar_platform = ''
+    assert !user.valid?
+  end
+
+  test 'avatar_platform can only be twitter or discord' do
+    user = users(:tohfoo)
+
+    user.avatar_platform = 'twitter'
+    assert user.valid?
+
+    user.avatar_platform = 'discord'
+    assert user.valid?
+
+    user.avatar_platform = 'notvalid'
+    assert !user.valid?
   end
 end
