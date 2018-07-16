@@ -8,6 +8,6 @@ class PlaySignal < ApplicationRecord
   end
 
   def active?
-    DateTime.current < end_time && published?
+    end_time && DateTime.current < end_time && published?
   end
 end
