@@ -9,7 +9,7 @@ tohfoo_twitter:
 
 tohfoo_discord:
   user: tohfoo
-  provider: discordj
+  provider: discord
   uid: abcdefg
   username: "Tohfoo#1306"
   image_url: https://discordapp.com

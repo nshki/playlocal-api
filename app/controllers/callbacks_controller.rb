@@ -7,10 +7,15 @@ class CallbacksController < ApplicationController
       user = User.find_by(args)
     end
 
-    # Find/create the Identity instance. This step will ensure the Identity has
-    # a corresponding User.
+    # Find the Identity instance. Create new Identity if none was found.
     identity = Identity.find_with_omniauth(auth_hash)
     identity = Identity.create_with_omniauth(auth_hash, user) if identity.nil?
+
+    # Reassociate Identity if User already existed. This should only trigger if
+    # an Identity was found and the User instances didn't match.
+    if user.present? && identity.user != user
+      identity.update(user: user)
+    end
 
     if identity.user.present?
       jwt = Auth.encode(identity.user)
