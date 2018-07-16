@@ -1,8 +1,8 @@
 class User < ApplicationRecord
   after_create :build_signal
 
-  has_many :identities
-  has_one :play_signal
+  has_many :identities, dependent: :destroy
+  has_one :play_signal, dependent: :destroy
 
   validates :username, presence: true, uniqueness: true
   validates :avatar_platform, inclusion: {
