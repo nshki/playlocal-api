@@ -40,4 +40,9 @@ class UserTest < ActiveSupport::TestCase
     user.avatar_platform = 'notvalid'
     assert !user.valid?
   end
+
+  test 'builds associated PlaySignal on create' do
+    user = User.create(username: 'signaluser', avatar_platform: 'twitter')
+    assert user.play_signal.present?
+  end
 end

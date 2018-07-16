@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  after_create :build_signal
+
   has_many :identities
   has_one :play_signal
 
@@ -17,4 +19,13 @@ class User < ApplicationRecord
       avatar_platform: hash[:provider],
     )
   end
+
+  protected
+
+    # Build an associated PlaySignal.
+    #
+    # @return {Boolean}
+    def build_signal
+      self.build_play_signal.save(validate: false)
+    end
 end
