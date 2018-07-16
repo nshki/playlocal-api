@@ -32,6 +32,13 @@ module KachaApi
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins ENV['CLIENT_ORIGIN']
+        resource '*', headers: :any, methods: [:get, :post, :options]
+      end
+    end
+
     # OmniAuth config.
     config.session_store :cookie_store, key: '_interslice_session'
     config.middleware.use ActionDispatch::Cookies # Required for all session management

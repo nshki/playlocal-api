@@ -13,6 +13,7 @@ gem 'omniauth-discord'
 gem 'graphql'
 gem 'graphiql-rails'
 gem 'jwt'
+gem 'rack-cors'
 
 group :development, :test do
   gem 'dotenv-rails'
