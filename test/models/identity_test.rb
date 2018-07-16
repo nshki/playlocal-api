@@ -33,10 +33,26 @@ class IdentityTest < ActiveSupport::TestCase
         image_url: '',
       },
     }
-    Identity.create_with_omniauth(hash)
+    Identity.create_with_omniauth(hash, nil)
 
     user = User.find_by(username: 'testname')
     assert user.present?
+    assert user.identities.find_by(provider: 'twitter', uid: 'testuid').present?
+  end
+
+  test '.create_with_omniauth creates new instance on given User' do
+    user = User.create(username: 'newuser')
+    hash = {
+      provider: 'twitter',
+      uid: 'testuid',
+      info: {
+        nickname: 'testname',
+        image_url: '',
+      },
+    }
+    Identity.create_with_omniauth(hash, user)
+
+    assert user.identities.first.present?
     assert user.identities.find_by(provider: 'twitter', uid: 'testuid').present?
   end
 

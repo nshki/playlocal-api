@@ -14,8 +14,9 @@ class Identity < ApplicationRecord
   # Given an auth hash returned by OmniAuth, attach a new instance to a User.
   #
   # @param {Hash} hash
+  # @param {User} user
   # @return {Identity}
-  def self.create_with_omniauth(hash)
+  def self.create_with_omniauth(hash, user)
     user ||= User.create_with_omniauth(hash)
     user.identities.create(
       provider: hash[:provider],

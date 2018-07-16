@@ -5,8 +5,9 @@ class User < ApplicationRecord
   has_one :play_signal
 
   validates :username, presence: true, uniqueness: true
-  validates :avatar_platform, presence: true, inclusion: {
-    in: %w(twitter discord)
+  validates :avatar_platform, inclusion: {
+    in: %w(twitter discord),
+    allow_blank: true,
   }
 
   # Given an auth hash return by OmniAuth, create a new User.
