@@ -22,21 +22,26 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
   test 'redirects to expected path with new user' do
     auth_hash = {
       uid: '12345',
-      provider: 'twitter',
+      provider: 'discord',
       info: {
-        nickname: 'newuser',
-        image: '',
+        image: 'https://discordapp.com',
+      },
+      extra: {
+        raw_info: {
+          username: 'discorduser',
+          discriminator: '123'
+        },
       },
     }
-    OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new(auth_hash)
+    OmniAuth.config.mock_auth[:discord] = OmniAuth::AuthHash.new(auth_hash)
 
-    get '/auth/twitter'
+    get '/auth/discord'
     follow_redirect!
 
-    identity = Identity.find_by(provider: 'twitter', uid: '12345')
+    identity = Identity.find_by(provider: 'discord', uid: '12345')
     user = identity && identity.user.present? ? identity.user : User.new
-    assert user.present? && user.valid? && user.username == 'newuser'
-    assert identity.present? && identity.provider == 'twitter' &&
-           identity.uid == '12345' && identity.username == 'newuser'
+    assert user.present? && user.valid? && user.username == 'discorduser#123'
+    assert identity.present? && identity.provider == 'discord' &&
+           identity.uid == '12345' && identity.username == 'discorduser#123'
   end
 end
