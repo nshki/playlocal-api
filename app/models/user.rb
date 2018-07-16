@@ -26,6 +26,6 @@ class User < ApplicationRecord
     #
     # @return {Boolean}
     def build_signal
-      self.build_play_signal.save(validate: false)
+      self.build_play_signal(published: false).save(validate: false)
     end
 end
