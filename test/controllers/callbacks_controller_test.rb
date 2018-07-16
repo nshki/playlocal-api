@@ -41,8 +41,8 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     get '/auth/twitter'
     follow_redirect!
 
-    assert user.updated_at == updated_ats[:user]
-    assert identity.updated_at == updated_ats[:identity]
+    assert user.reload.updated_at == updated_ats[:user]
+    assert identity.reload.updated_at == updated_ats[:identity]
   end
 
   test '#handle existing User existing Identity on another User' do
