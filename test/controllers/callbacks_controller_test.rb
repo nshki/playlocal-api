@@ -1,4 +1,9 @@
 class CallbacksControllerTest < ActionDispatch::IntegrationTest
+  def setup
+    OmniAuth.config.mock_auth[:twitter] = nil
+    OmniAuth.config.mock_auth[:discord] = nil
+  end
+
   test '#handle new User new Identity' do
     OmniAuth.config.mock_auth[:discord] = OmniAuth::AuthHash.new(discord_hash)
 
@@ -26,38 +31,27 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
 
   test '#handle existing User existing Identity' do
     user = users(:tohfoo)
-    user.save
     identity = user.identities.find_by(provider: 'twitter')
-    user_updated_at = user.updated_at
-    identity_updated_at = identity.updated_at
+    updated_ats = { user: user.updated_at, identity: identity.updated_at }
     OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new(
       uid: identity.uid,
       provider: identity.provider,
-      info: {
-        nickname: identity.username,
-        image: identity.image_url,
-      },
     )
 
-    get '/auth/discord'
+    get '/auth/twitter'
     follow_redirect!
 
-    assert user.updated_at == user_updated_at
-    assert identity.updated_at == identity.updated_at
+    assert user.updated_at == updated_ats[:user]
+    assert identity.updated_at == updated_ats[:identity]
   end
 
   test '#handle existing User existing Identity on another User' do
     origin_user = users(:tohfoo)
-    origin_user.save
     identity = identities(:brianydg_twitter)
     token = Auth.encode(origin_user)
     OmniAuth.config.mock_auth[:discord] = OmniAuth::AuthHash.new(
       uid: identity.uid,
       provider: identity.provider,
-      info: {
-        nickname: identity.username,
-        image: identity.image_url,
-      },
     )
 
     get "/auth/discord?token=#{token}"
