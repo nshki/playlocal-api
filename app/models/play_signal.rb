@@ -4,7 +4,10 @@ class PlaySignal < ApplicationRecord
   validates :message, :lat, :lng, presence: true
 
   def self.all_active
-    PlaySignal.all.select { |signal| signal.active? }
+    PlaySignal.includes(user: :identities).where(
+      end_time: DateTime.current..Float::INFINITY,
+      published: true,
+    )
   end
 
   def active?
