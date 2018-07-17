@@ -14,6 +14,7 @@ gem 'graphql'
 gem 'graphiql-rails'
 gem 'jwt'
 gem 'rack-cors'
+gem 'faker'
 
 group :development, :test do
   gem 'dotenv-rails'
