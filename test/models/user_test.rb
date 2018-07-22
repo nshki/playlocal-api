@@ -41,5 +41,6 @@ class UserTest < ActiveSupport::TestCase
   test 'builds associated PlaySignal on create' do
     user = User.create(username: 'signaluser', avatar_platform: 'twitter')
     assert user.play_signal.present? && !user.play_signal.published
+    assert user.play_signal.message == ''
   end
 end
