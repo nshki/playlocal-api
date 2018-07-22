@@ -15,7 +15,7 @@ class User < ApplicationRecord
   # @param {Hash} hash
   # @return {User}
   def self.create_with_omniauth(hash)
-    user = User.create(
+    User.create(
       username: Identity.get_omniauth_username(hash),
       avatar_platform: hash[:provider],
     )
