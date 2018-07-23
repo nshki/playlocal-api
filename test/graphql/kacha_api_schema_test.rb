@@ -30,7 +30,7 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
     user = users(:tohfoo)
     query = %(
       mutation {
-        updateSignal(message: "Test", endTime: "Jul 15, 2018 7:14pm", published: true) {
+        updateSignal(message: "Test", endTime: "Jul 15, 2018 7:14pm", published: true, lat: 0, lng: 0) {
           errors
         }
       }
