@@ -28,6 +28,15 @@ class PlaySignalTest < ActiveSupport::TestCase
     assert !signal.valid?
   end
 
+  test "end_time can't be in the past on publish" do
+    signal = play_signals(:tohfoo_signal)
+    signal.published = true
+    signal.end_time = DateTime.current - 1.hour
+    assert !signal.valid?
+    signal.published = false
+    assert signal.valid?
+  end
+
   test '.all_active returns all active signals' do
     play_signals(:tohfoo_signal).update(published: false)
     all_signals = PlaySignal.all_active
@@ -39,10 +48,10 @@ class PlaySignalTest < ActiveSupport::TestCase
     assert signal.active?
 
     signal.end_time = DateTime.yesterday
-    assert !signal.active? && signal.valid?
+    assert !signal.active?
 
     signal.end_time = DateTime.tomorrow
     signal.published = false
-    assert !signal.active? && signal.valid?
+    assert !signal.active?
   end
 end
