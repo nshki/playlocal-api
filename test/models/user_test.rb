@@ -43,4 +43,31 @@ class UserTest < ActiveSupport::TestCase
     assert user.play_signal.present? && !user.play_signal.published
     assert user.play_signal.message == ''
   end
+
+  test '.create_with_omniauth creates User' do
+    hash = {
+      provider: 'twitter',
+      uid: 'testuid',
+      info: {
+        nickname: 'testname',
+        image_url: '',
+      },
+    }
+    user = User.create_with_omniauth(hash)
+    assert user.present?
+  end
+
+  test '.create_with_omniauth creates User with non-duplicate username' do
+    User.create(username: 'testname', avatar_platform: 'discord')
+    hash = {
+      provider: 'twitter',
+      uid: 'testuid',
+      info: {
+        nickname: 'testname',
+        image_url: '',
+      },
+    }
+    user = User.create_with_omniauth(hash)
+    assert user.username == 'testname1'
+  end
 end

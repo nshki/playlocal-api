@@ -15,8 +15,17 @@ class User < ApplicationRecord
   # @param {Hash} hash
   # @return {User}
   def self.create_with_omniauth(hash)
+    # Make sure duplicate usernames aren't used.
+    username = Identity.get_omniauth_username(hash)
+    i = 0
+    while User.find_by(username: username).present? do
+      i += 1
+      username = "#{username}#{i}"
+    end
+
+    # Create and return the User.
     User.create(
-      username: Identity.get_omniauth_username(hash),
+      username: username,
       avatar_platform: hash[:provider],
     )
   end
