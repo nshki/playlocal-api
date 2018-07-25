@@ -59,6 +59,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     get "/auth/discord?token=#{token}"
     follow_redirect!
 
+    assert_redirected_to %r(\/profile\?token=)
     assert identity.reload.user == origin_user
     assert User.find_by(id: old_user_id) == nil
   end

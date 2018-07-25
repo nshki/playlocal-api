@@ -2,6 +2,7 @@ class CallbacksController < ApplicationController
   def handle
     # Determine if this sign in was for an existing or new User.
     user = nil
+    reassociated = false
     if auth_params.has_key?('token')
       args = Auth.decode(auth_params['token'])
       user = User.find_by(args)
@@ -17,11 +18,16 @@ class CallbacksController < ApplicationController
       old_user = identity.user
       identity.update(user: user)
       old_user.destroy if old_user.identities.count == 0
+      reassociated = true
     end
 
     if identity.user.present?
       jwt = Auth.encode(identity.user)
-      redirect_to "#{client_url}?token=#{jwt}"
+      if reassociated
+        redirect_to "#{client_url}/profile?token=#{jwt}"
+      else
+        redirect_to "#{client_url}?token=#{jwt}"
+      end
     else
       # This shouldn't occur at all, but is there as a fallback in case this
       # somehow happens. This will likely trigger due to tinkering from client.
