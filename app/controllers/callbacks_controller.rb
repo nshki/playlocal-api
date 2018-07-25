@@ -14,7 +14,9 @@ class CallbacksController < ApplicationController
     # Reassociate Identity if User already existed. This should only trigger if
     # an Identity was found and the User instances didn't match.
     if user.present? && identity.user != user
+      old_user = identity.user
       identity.update(user: user)
+      old_user.destroy if old_user.identities.count == 0
     end
 
     if identity.user.present?

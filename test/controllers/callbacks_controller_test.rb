@@ -47,7 +47,9 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
 
   test '#handle existing User existing Identity on another User' do
     origin_user = users(:tohfoo)
+    old_user_id = users(:brianydg)
     identity = identities(:brianydg_twitter)
+    identities(:brianydg_discord).destroy
     token = Auth.encode(origin_user)
     OmniAuth.config.mock_auth[:discord] = OmniAuth::AuthHash.new(
       uid: identity.uid,
@@ -58,6 +60,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
 
     assert identity.reload.user == origin_user
+    assert User.find_by(id: old_user_id) == nil
   end
 
   def discord_hash
