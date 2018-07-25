@@ -69,4 +69,34 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
     assert user.username == 'Teehee'
     assert user.avatar_platform == 'discord'
   end
+
+  test 'disconnectAccount' do
+    user = User.create(username: 'testuser', avatar_platform: 'twitter')
+    user_id = user.id
+    user.identities.create(provider: 'twitter', uid: 'test', username: 'myaccount', image_url: '')
+    user.identities.create(provider: 'twitter', uid: 'test2', username: 'myaccount2', image_url: '')
+    query = %(
+      mutation {
+        disconnectAccount(provider: "twitter") {
+          errors
+        }
+      }
+    )
+    context = { current_user: user }
+
+    # Authorized?
+    response = KachaApiSchema.execute(query, context: {}, variables: {}).to_h
+    assert response['data']['disconnectAccount']['errors'].first == I18n.t('unauthorized')
+
+    # Successful mutations.
+    response = KachaApiSchema.execute(query, context: context, variables: {}).to_h
+    assert user.identities.count == 1
+    assert user.reload.present?
+    response = KachaApiSchema.execute(query, context: context, variables: {}).to_h
+    assert User.find_by(id: user_id).nil?
+
+    # Account doesn't exist error.
+    response = KachaApiSchema.execute(query, context: context, variables: {}).to_h
+    assert response['data']['disconnectAccount']['errors'].first == 'Account not found'
+  end
 end
