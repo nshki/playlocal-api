@@ -14,7 +14,7 @@ class Mutations::UpdateProfile < Mutations::BaseMutation
     if user.save
       { errors: [] }
     else
-      { errors: signal.errors.full_messages }
+      { errors: user.errors.full_messages }
     end
   end
 end
