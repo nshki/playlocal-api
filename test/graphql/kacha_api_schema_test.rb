@@ -78,6 +78,7 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
     query1 = %(
       mutation {
         disconnectAccount(provider: "twitter") {
+          userDeleted
           avatarPlatform
           errors
         }
@@ -86,6 +87,7 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
     query2 = %(
       mutation {
         disconnectAccount(provider: "discord") {
+          userDeleted
           avatarPlatform
           errors
         }
@@ -101,7 +103,7 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
     response = KachaApiSchema.execute(query1, context: context, variables: {}).to_h
     assert user.identities.count == 1 && response['data']['disconnectAccount']['avatarPlatform'] == 'discord'
     response = KachaApiSchema.execute(query2, context: context, variables: {}).to_h
-    assert User.find_by(id: user_id).nil?
+    assert User.find_by(id: user_id).nil? && response['data']['disconnectAccount']['userDeleted'] == true
 
     # Account doesn't exist error.
     response = KachaApiSchema.execute(query1, context: context, variables: {}).to_h
