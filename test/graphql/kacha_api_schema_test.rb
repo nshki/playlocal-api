@@ -74,10 +74,19 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
     user = User.create(username: 'testuser', avatar_platform: 'twitter')
     user_id = user.id
     user.identities.create(provider: 'twitter', uid: 'test', username: 'myaccount', image_url: '')
-    user.identities.create(provider: 'twitter', uid: 'test2', username: 'myaccount2', image_url: '')
-    query = %(
+    user.identities.create(provider: 'discord', uid: 'test2', username: 'myaccount2', image_url: '')
+    query1 = %(
       mutation {
         disconnectAccount(provider: "twitter") {
+          avatarPlatform
+          errors
+        }
+      }
+    )
+    query2 = %(
+      mutation {
+        disconnectAccount(provider: "discord") {
+          avatarPlatform
           errors
         }
       }
@@ -85,18 +94,17 @@ class KachaApiSchemaTest < ActiveSupport::TestCase
     context = { current_user: user }
 
     # Authorized?
-    response = KachaApiSchema.execute(query, context: {}, variables: {}).to_h
+    response = KachaApiSchema.execute(query1, context: {}, variables: {}).to_h
     assert response['data']['disconnectAccount']['errors'].first == I18n.t('unauthorized')
 
     # Successful mutations.
-    response = KachaApiSchema.execute(query, context: context, variables: {}).to_h
-    assert user.identities.count == 1
-    assert user.reload.present?
-    response = KachaApiSchema.execute(query, context: context, variables: {}).to_h
+    response = KachaApiSchema.execute(query1, context: context, variables: {}).to_h
+    assert user.identities.count == 1 && response['data']['disconnectAccount']['avatarPlatform'] == 'discord'
+    response = KachaApiSchema.execute(query2, context: context, variables: {}).to_h
     assert User.find_by(id: user_id).nil?
 
     # Account doesn't exist error.
-    response = KachaApiSchema.execute(query, context: context, variables: {}).to_h
+    response = KachaApiSchema.execute(query1, context: context, variables: {}).to_h
     assert response['data']['disconnectAccount']['errors'].first == 'Account not found'
   end
 end
