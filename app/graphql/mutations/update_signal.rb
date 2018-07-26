@@ -12,7 +12,7 @@ class Mutations::UpdateSignal < Mutations::BaseMutation
 
     signal = context[:current_user].play_signal
     signal.message = message
-    signal.end_time = end_time
+    signal.end_time = DateTime.parse(end_time)
     signal.lat = lat
     signal.lng = lng
     signal.published = published
