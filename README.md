@@ -24,7 +24,8 @@ conduct can all be found in the client app repository.
 
 ## Some prerequisites
 
-1. [Install rbenv](https://github.com/rbenv/rbenv#installation).
+1. [Install rbenv](https://github.com/rbenv/rbenv#installation). Make sure you
+   also install rbenv-build (also in their instructions).
 
 2. [Install PostgreSQL](https://www.postgresql.org/download/).
 
