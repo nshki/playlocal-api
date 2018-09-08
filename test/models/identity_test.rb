@@ -24,13 +24,38 @@ class IdentityTest < ActiveSupport::TestCase
     assert !identity.valid?
   end
 
+  test '.find_with_omniauth finds correct user' do
+    identity = identities(:tohfoo_twitter)
+    hash = {
+      provider: identity.provider,
+      uid: identity.uid,
+    }
+    result = Identity.find_with_omniauth(hash)
+    assert result.id == identity.id
+  end
+
+  test '.find_with_omniauth updates username and avatar if it changed' do
+    identity = identities(:tohfoo_twitter)
+    hash = {
+      provider: identity.provider,
+      uid: identity.uid,
+      info: {
+        nickname: 'testname',
+        image: 'http://newurl.com/myimage',
+      },
+    }
+    result = Identity.find_with_omniauth(hash)
+    assert result.username == 'testname'
+    assert result.image_url == 'http://newurl.com/myimage'
+  end
+
   test '.create_with_omniauth creates associated User and instance' do
     hash = {
       provider: 'twitter',
       uid: 'testuid',
       info: {
         nickname: 'testname',
-        image_url: '',
+        image: '',
       },
     }
     Identity.create_with_omniauth(hash, nil)

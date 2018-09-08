@@ -8,7 +8,17 @@ class Identity < ApplicationRecord
   # @param {Hash} hash
   # @return {Identity | nil}
   def self.find_with_omniauth(hash)
-    Identity.find_by(provider: hash[:provider], uid: hash[:uid])
+    identity = Identity.find_by(provider: hash[:provider], uid: hash[:uid])
+
+    # If the username or avatar has changed, update them.
+    if identity.present? && hash[:info].present?
+      username = Identity.get_omniauth_username(hash)
+      identity.username = username if identity.username != username
+      identity.image_url = hash[:info][:image]
+      identity.save
+    end
+
+    identity
   end
 
   # Given an auth hash returned by OmniAuth, attach a new instance to a User.
