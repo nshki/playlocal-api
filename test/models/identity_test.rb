@@ -100,7 +100,16 @@ class IdentityTest < ActiveSupport::TestCase
         },
       },
     }
+    google_hash = {
+      provider: 'google',
+      uid: 'testuid',
+      info: {
+        email: 'chuck@testa.com',
+        image: '',
+      },
+    }
     assert Identity.get_omniauth_username(twitter_hash) == 'testname'
     assert Identity.get_omniauth_username(discord_hash) == 'teehee#123'
+    assert Identity.get_omniauth_username(google_hash) == 'chuck@testa.com'
   end
 end

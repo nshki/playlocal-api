@@ -22,7 +22,7 @@ class UserTest < ActiveSupport::TestCase
     assert !user.valid?
   end
 
-  test 'avatar_platform can only be blank, twitter, or discord' do
+  test 'avatar_platform can only be blank or selected providers' do
     user = users(:tohfoo)
 
     user.avatar_platform = ''
@@ -32,6 +32,9 @@ class UserTest < ActiveSupport::TestCase
     assert user.valid?
 
     user.avatar_platform = 'discord'
+    assert user.valid?
+
+    user.avatar_platform = 'google'
     assert user.valid?
 
     user.avatar_platform = 'notvalid'
