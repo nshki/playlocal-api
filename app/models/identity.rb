@@ -48,6 +48,8 @@ class Identity < ApplicationRecord
     when 'discord'
       subhash = hash[:extra][:raw_info]
       "#{subhash[:username]}##{subhash[:discriminator]}"
+    when 'google'
+      hash[:info][:email]
     end
   end
 end
