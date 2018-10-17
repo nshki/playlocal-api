@@ -10,6 +10,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'omniauth-discord'
+gem 'omniauth-google-oauth2'
 gem 'graphql'
 gem 'graphiql-rails'
 gem 'jwt'
