@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   validates :username, presence: true, uniqueness: true
   validates :avatar_platform, inclusion: {
-    in: %w(twitter discord),
+    in: %w(twitter discord google),
     allow_blank: true,
   }
 
